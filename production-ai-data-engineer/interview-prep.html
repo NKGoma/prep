@@ -1,0 +1,1076 @@
+<title>Production AI &amp; Data Engineer — Interview Prep</title>
+<style>
+  :root {
+    --bg: #f3f1ea;
+    --surface: #ffffff;
+    --surface-2: #eae7dd;
+    --ink: #1c2129;
+    --muted: #5b6472;
+    --hairline: #d8d4c8;
+    --accent: #c97a1a;
+    --accent-ink: #ffffff;
+    --accent2: #2f8f82;
+    --good: #2f8f5a;
+    --bad: #c1442e;
+    --shadow: 0 1px 2px rgba(28,33,41,0.06), 0 8px 24px rgba(28,33,41,0.06);
+    --radius: 14px;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171c;
+      --surface: #1c212a;
+      --surface-2: #232a34;
+      --ink: #e8e6df;
+      --muted: #8b93a1;
+      --hairline: #2c333e;
+      --accent: #e8a33d;
+      --accent-ink: #1c1207;
+      --accent2: #4fb6a8;
+      --good: #59c98a;
+      --bad: #e8695a;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14171c; --surface: #1c212a; --surface-2: #232a34; --ink: #e8e6df;
+    --muted: #8b93a1; --hairline: #2c333e; --accent: #e8a33d; --accent-ink: #1c1207;
+    --accent2: #4fb6a8; --good: #59c98a; --bad: #e8695a;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 28px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #f3f1ea; --surface: #ffffff; --surface-2: #eae7dd; --ink: #1c2129;
+    --muted: #5b6472; --hairline: #d8d4c8; --accent: #c97a1a; --accent-ink: #ffffff;
+    --accent2: #2f8f82; --good: #2f8f5a; --bad: #c1442e;
+    --shadow: 0 1px 2px rgba(28,33,41,0.06), 0 8px 24px rgba(28,33,41,0.06);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .app {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 20px 20px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 100%;
+  }
+
+  /* ---------- Header ---------- */
+  .app-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .app-title-block { display: flex; flex-direction: column; gap: 4px; min-width: 260px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .subtitle { margin: 0; color: var(--muted); font-size: 14px; max-width: 50ch; }
+
+  .hud {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .hud-stat {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    padding: 8px 14px;
+    min-width: 76px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .hud-stat .num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .hud-stat .lbl {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  .hud-stat.streak .num { color: var(--accent); }
+  .hud-stat.mastered .num { color: var(--accent2); }
+
+  /* ---------- Mode switch ---------- */
+  .mode-switch {
+    display: inline-flex;
+    background: var(--surface-2);
+    border-radius: 999px;
+    padding: 4px;
+    gap: 4px;
+    border: 1px solid var(--hairline);
+  }
+  .mode-switch button {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .mode-switch button.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* ---------- Layout ---------- */
+  .layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 760px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Rail (signal chain nav) ---------- */
+  .rail {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    padding: 10px;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+  }
+  .rail-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 8px 10px 4px;
+  }
+  .node {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: 9px 10px;
+    border-radius: 9px;
+    cursor: pointer;
+    color: var(--ink);
+    position: relative;
+  }
+  .node:hover { background: var(--surface-2); }
+  .node.active { background: var(--surface-2); }
+  .node.active .node-id { border-color: var(--accent); color: var(--accent); }
+  .node-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    width: 22px;
+    height: 22px;
+    flex: none;
+    border-radius: 50%;
+    border: 1.5px solid var(--hairline);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .node.mastered .node-id {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #08302b;
+  }
+  .node-label { font-size: 13px; line-height: 1.25; }
+  .node-thread {
+    position: absolute;
+    left: 20px;
+    top: 34px;
+    width: 1.5px;
+    height: calc(100% - 10px);
+    background: var(--hairline);
+    z-index: 0;
+  }
+  .node:last-child .node-thread { display: none; }
+
+  .node.priority { margin-bottom: 6px; }
+  .node.priority .node-id {
+    border-color: var(--accent);
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .node.priority.active { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); }
+  .node.priority.active .node-id { background: var(--accent); color: var(--accent-ink); }
+  .rail-divider { height: 1px; background: var(--hairline); margin: 4px 6px 8px; }
+
+  /* ---------- Main stage ---------- */
+  .stage {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .stage-header { display: flex; flex-direction: column; gap: 6px; }
+  .stage-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .stage-eyebrow.priority { color: var(--accent); }
+  .stage-title { font-size: 19px; font-weight: 700; margin: 0; text-wrap: balance; }
+
+  /* ---------- Flip cards (Learn mode) ---------- */
+  .flip-card {
+    perspective: 1200px;
+    height: 220px;
+  }
+  .flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(.2,.7,.3,1);
+    transform-style: preserve-3d;
+    cursor: pointer;
+  }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 18px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid var(--hairline);
+    overflow: auto;
+  }
+  .flip-front {
+    background: var(--surface-2);
+  }
+  .flip-front .q-mark {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .flip-front .term { font-size: 17px; font-weight: 700; text-wrap: balance; }
+  .flip-back {
+    background: var(--accent2);
+    color: #08221f;
+    transform: rotateY(180deg);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .flip-back.priority-back { background: var(--accent); color: #241705; }
+  .priority-ref {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.85;
+    border-top: 1px solid rgba(0,0,0,0.15);
+    padding-top: 6px;
+    margin-top: 2px;
+  }
+  .flip-hint {
+    margin-top: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    opacity: 0.75;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flip-inner { transition: none; }
+    .flip-card.flipped .flip-front { display: none; }
+    .flip-card:not(.flipped) .flip-back { display: none; }
+    .flip-card.flipped .flip-inner, .flip-inner { transform: none; }
+    .flip-back { transform: none; }
+  }
+
+  .stage-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 6px;
+    border-top: 1px solid var(--hairline);
+  }
+  .stage-nav button {
+    border: 1px solid var(--hairline);
+    background: var(--surface-2);
+    color: var(--ink);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .stage-nav button:disabled { opacity: 0.4; cursor: default; }
+  .stage-nav .pos { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  /* ---------- Quiz mode ---------- */
+  .quiz-progress-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+  .quiz-card {
+    background: var(--surface-2);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .quiz-module-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .quiz-question { font-size: 17px; font-weight: 600; line-height: 1.35; text-wrap: balance; }
+  .quiz-options {
+    display: grid;
+    gap: 8px;
+  }
+  .quiz-option {
+    text-align: left;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  }
+  .quiz-option:hover:not(:disabled) { border-color: var(--accent2); }
+  .quiz-option .letter {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    width: 18px;
+    flex: none;
+  }
+  .quiz-option:disabled { cursor: default; }
+  .quiz-option.correct { background: color-mix(in srgb, var(--good) 18%, var(--surface)); border-color: var(--good); }
+  .quiz-option.wrong { background: color-mix(in srgb, var(--bad) 18%, var(--surface)); border-color: var(--bad); }
+  .quiz-option.dim { opacity: 0.55; }
+
+  .quiz-feedback {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 20px;
+  }
+  .quiz-feedback.correct { color: var(--good); }
+  .quiz-feedback.wrong { color: var(--bad); }
+
+  .quiz-next {
+    align-self: flex-start;
+    border: none;
+    background: var(--accent);
+    color: var(--accent-ink);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    flex: 1;
+    padding: 30px 10px;
+  }
+  .empty-state .big { font-size: 40px; }
+  .empty-state h2 { margin: 0; font-size: 20px; }
+  .empty-state p { margin: 0; color: var(--muted); max-width: 42ch; font-size: 14px; }
+  .empty-state button {
+    margin-top: 6px;
+    border: none;
+    background: var(--accent2);
+    color: #08221f;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+  }
+</style>
+
+<div class="app">
+  <header class="app-header">
+    <div class="app-title-block">
+      <span class="eyebrow">Production AI &amp; Data Engineer / LLMOps &amp; DataOps</span>
+      <h1>12-Module Interview Prep</h1>
+      <p class="subtitle">LLM fundamentals through security &amp; governance, plus a pinned "bet-money" top 10. Flip to learn, quiz to lock it in — wrong answers keep coming back until you get them.</p>
+    </div>
+    <div class="hud">
+      <div class="hud-stat"><div class="num" id="hud-score">0</div><div class="lbl">Score</div></div>
+      <div class="hud-stat streak"><div class="num" id="hud-streak">0</div><div class="lbl">Streak</div></div>
+      <div class="hud-stat mastered"><div class="num" id="hud-mastered">0/12</div><div class="lbl">Mastered</div></div>
+    </div>
+  </header>
+
+  <div class="mode-switch" role="tablist" aria-label="Mode">
+    <button id="btn-learn" class="active" role="tab" aria-selected="true">Learn</button>
+    <button id="btn-quiz" role="tab" aria-selected="false">Quiz</button>
+  </div>
+
+  <div class="layout">
+    <nav class="rail" id="rail" aria-label="Modules"></nav>
+    <main class="stage" id="stage"></main>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var MODULES = [
+    {
+      title: "LLM Basics",
+      cards: [
+        { term: "What is an LLM?", back: "A transformer-based neural network trained on huge text corpora to predict the next token given prior context. At scale, that next-token prediction generalizes into reasoning, summarization, coding, and more." },
+        { term: "How does an LLM generate text?", back: "Autoregressively: it computes a probability distribution over the vocabulary for the next token, samples one, appends it, and repeats — one token at a time, conditioned on everything generated so far." },
+        { term: "What are tokens?", back: "The atomic units the model operates on — sub-word pieces produced by a tokenizer (e.g. BPE), not full words or single characters. “Understanding” might be 2-3 tokens; a rare word might be many." },
+        { term: "What is a context window?", back: "The max number of tokens (input + output combined) the model can attend to in one call. Everything outside it is invisible to the model — why RAG, summarization, and truncation strategies exist." },
+        { term: "Why do hallucinations happen?", back: "The model is a next-token predictor optimized for plausible text, not a database. Without grounding (no retrieved fact, ambiguous prompt, out-of-distribution question) it still produces fluent, confident-sounding, possibly false output." },
+        { term: "What is temperature?", back: "A sampling parameter that scales the probability distribution before picking the next token. Low temperature (near 0) = deterministic, most-likely output; high temperature = more randomness and diversity." },
+        { term: "Why are prompts important?", back: "The prompt is your only steering mechanism at inference time — it sets task framing, tone, constraints, and available context. Small wording changes measurably change output, which is why prompts get versioned like code." },
+        { term: "What are system prompts?", back: "A privileged instruction channel, separate from user turns, used to set persistent behavior — role, tone, constraints, safety rules — that should hold across the whole conversation regardless of what the user says." },
+        { term: "What are function calls / tool calls?", back: "A structured output mode where the model emits a JSON-shaped request to invoke a specific function/API with specific arguments, instead of (or alongside) free text. Your code executes it and feeds the result back in." },
+        { term: "What are the limitations of LLMs?", back: "Fixed context window, no persistent memory between calls unless you build it, hallucination risk, a knowledge cutoff, sensitivity to prompt phrasing, and no built-in guarantee of factual correctness or determinism." }
+      ],
+      quiz: [
+        { q: "What does an LLM fundamentally do at each generation step?", options: ["Looks up the answer in a database", "Predicts a probability distribution over the next token and samples from it", "Executes a fixed rule-based script", "Retrieves the exact matching training example"], a: 1 },
+        { q: "A “context window” refers to:", options: ["The model's total training data size", "The max number of tokens the model can attend to in one call", "The number of tools available to an agent", "The temperature setting"], a: 1 },
+        { q: "Hallucinations happen mainly because:", options: ["The model deliberately deceives users", "It generates fluent, plausible text even without real grounding for it", "The context window is too large", "Tokens are case-sensitive"], a: 1 }
+      ]
+    },
+    {
+      title: "Prompting vs RAG vs Fine-Tuning",
+      cards: [
+        { term: "Explain the difference.", back: "Prompting steers the frozen model at call time (no new knowledge added). RAG injects fresh external knowledge into the prompt via retrieval. Fine-tuning updates the model's own weights on your examples, changing its default behavior." },
+        { term: "When would you use RAG?", back: "When the model needs facts it wasn't trained on or that change often — internal docs, current data, per-customer content — and you need traceability back to a source." },
+        { term: "When would you fine-tune?", back: "When you need consistent behavior — format, tone, domain jargon, a narrow task done a specific way — more than you need to inject new facts." },
+        { term: "Why not fine-tune everything?", back: "It's expensive (data curation, training, retraining on every update), harder to keep current than swapping documents in an index, riskier (can degrade general ability), and gives no per-answer source attribution." },
+        { term: "Why doesn't prompting solve missing knowledge?", back: "You can't prompt in facts the model was never trained on and doesn't have access to — it can only work with what's in its weights or explicitly placed in the context window." },
+        { term: "Can RAG and fine-tuning be combined?", back: "Yes — fine-tune for consistent behavior/format/domain style, and layer RAG on top to inject current or proprietary facts. Common in production systems that need both correctness and consistency." },
+        { term: "What are the costs/tradeoffs?", back: "Prompting: cheapest, fastest to iterate, weakest for changing facts. RAG: added infra and latency, but easy to update. Fine-tuning: highest upfront cost, but can bake in behavior prompting can't reliably force." },
+        { term: "Which approach is best for changing regulations?", back: "RAG — regulations change frequently and answers need to be traceable to the current source document, not baked into weights that go stale." },
+        { term: "Which approach is best for style consistency?", back: "Fine-tuning — if the model needs to reliably speak in one voice/format across thousands of interactions, prompting alone drifts over long or varied conversations." },
+        { term: "Which approach is best for internal documents?", back: "RAG — internal docs change, are private, and need per-answer citation. Retrieval avoids retraining every time a document changes." }
+      ],
+      quiz: [
+        { q: "Which approach is best when facts change frequently and need source traceability?", options: ["Fine-tuning", "RAG", "Prompting alone", "Increasing temperature"], a: 1 },
+        { q: "Fine-tuning is the better fit when you need:", options: ["Fresh facts injected per query", "Consistent style/format/behavior baked in over many interactions", "The cheapest possible iteration speed", "Zero training data"], a: 1 },
+        { q: "Why can't prompting alone fix missing knowledge?", options: ["Prompts can't exceed 100 words", "The model can only use what's in its weights or the context window — it can't use facts it never saw", "Prompting is more expensive than fine-tuning", "Prompting requires GPU training"], a: 1 }
+      ]
+    },
+    {
+      title: "Embeddings",
+      cards: [
+        { term: "What is an embedding?", back: "A numeric vector representation of text such that semantically similar inputs land close together in that vector space — produced by a model trained to preserve meaning as geometry." },
+        { term: "Why do embeddings work?", back: "The embedding model is trained (contrastive / self-supervised objectives) so things used in similar contexts get similar vectors — meaning gets encoded as position and direction in high-dimensional space." },
+        { term: "Why can “car” match “vehicle”?", back: "They occur in similar contexts across training data, so the model learns to place their vectors close together. The match is semantic, not a shared-character trick." },
+        { term: "What is semantic similarity?", back: "How close two pieces of text are in meaning, measured by distance/angle between their embedding vectors — rather than by shared words or exact string overlap." },
+        { term: "What is cosine similarity?", back: "The standard way to compare two embedding vectors: the cosine of the angle between them (1 = same direction/meaning, 0 = unrelated, -1 = opposite). Used because it ignores magnitude and focuses on direction." },
+        { term: "Why not use keyword search?", back: "Keyword/lexical search misses synonyms, paraphrases, and conceptual matches — it only matches on literal token overlap, so a differently-worded question misses a relevant document." },
+        { term: "What dimensions do embeddings have?", back: "A fixed-size vector, typically hundreds to a few thousand floats (e.g. 384, 768, 1536, 3072) depending on the model. Higher dimensionality can capture more nuance but costs more storage/compute." },
+        { term: "Are embeddings deterministic?", back: "Yes for a given model version and input — same text in, same vector out. But different model versions/providers produce incompatible vector spaces, so you can't mix embeddings from different models in one index." },
+        { term: "What makes a good embedding model?", back: "Strong semantic separation for your domain, appropriate dimensionality vs cost, multilingual support if needed, and stability — you don't want to re-embed your whole corpus after every provider update." },
+        { term: "When would embeddings fail?", back: "Highly specific/rare terminology outside training data, exact-match needs (IDs, codes, precise numbers), or a domain so specialized the general model can't separate similar-looking but distinct concepts." }
+      ],
+      quiz: [
+        { q: "An embedding is:", options: ["A compressed copy of the raw text", "A numeric vector positioning text by meaning in a shared space", "A hash of the string used for deduplication", "A summary generated by the LLM"], a: 1 },
+        { q: "Cosine similarity measures:", options: ["The exact character overlap between two strings", "The angle between two vectors, indicating how similar their meaning/direction is", "The file size difference between documents", "The token count difference"], a: 1 },
+        { q: "Keyword search underperforms semantic search because:", options: ["It's always slower to run", "It only matches literal token overlap and misses synonyms/paraphrases", "It can't be indexed at all", "It requires a GPU"], a: 1 }
+      ]
+    },
+    {
+      title: "RAG Pipeline",
+      cards: [
+        { term: "Explain the entire RAG pipeline.", back: "Ingest & chunk documents → embed each chunk → store vectors + metadata in a vector DB → at query time, embed the question → retrieve top-k nearest chunks → assemble them into the prompt → the LLM generates an answer grounded in that context." },
+        { term: "What is chunking?", back: "Splitting documents into smaller pieces before embedding — embedding an entire document loses granularity (no citing just the relevant paragraph) and often exceeds context/embedding limits." },
+        { term: "Why is chunk size important?", back: "Too small and you lose the context needed to answer; too large and you dilute relevance per chunk and burn context window space unnecessarily." },
+        { term: "What are chunk overlap strategies?", back: "Letting consecutive chunks share a few sentences/tokens so information split across a boundary — like a definition starting at the end of one chunk — isn't lost to either side." },
+        { term: "Why does retrieval fail?", back: "Poor chunking, a query phrased very differently from the source wording despite meaning the same thing, an embedding model mismatched to domain vocabulary, or genuinely missing/stale content in the index." },
+        { term: "How do tables affect RAG?", back: "Naive text chunking destroys table structure — rows/columns become a jumble of text. Tables usually need special parsing/serialization (e.g. to markdown or key-value pairs) before embedding." },
+        { term: "What metadata should be stored?", back: "Source document/ID, section/page, timestamp/version, access permissions, and useful filter tags (department, doc type) — enables citation and scoped or hybrid retrieval." },
+        { term: "What happens after retrieval?", back: "Retrieved chunks get assembled (often re-ranked/filtered for relevance) and inserted into the prompt alongside the user's question and instructions, before being sent to the LLM." },
+        { term: "What is prompt augmentation?", back: "The step of injecting retrieved context — plus instructions like “answer only from the provided context” — into the prompt template before sending it to the model. Literally the “Augmented” in RAG." },
+        { term: "How would you debug bad answers?", back: "Check retrieval first — inspect what chunks actually came back for the query. If retrieval is fine but the answer is wrong, check prompt assembly/instructions. If both are fine, check the source data for gaps or staleness." }
+      ],
+      quiz: [
+        { q: "The correct order of a RAG pipeline is:", options: ["Generate → Retrieve → Chunk", "Chunk → Embed → Store → Retrieve → Augment prompt → Generate", "Embed → Generate → Chunk", "Store → Generate → Chunk"], a: 1 },
+        { q: "Chunk overlap exists to:", options: ["Make chunks bigger for no reason", "Avoid losing information that spans a chunk boundary", "Speed up embedding computation", "Reduce vector storage cost"], a: 1 },
+        { q: "If retrieval returns irrelevant chunks, you should first check:", options: ["The LLM's temperature setting", "Chunking strategy, embedding model fit, and query-vs-source phrasing mismatch", "The API gateway configuration", "The Docker image version"], a: 1 }
+      ]
+    },
+    {
+      title: "Vector Databases",
+      cards: [
+        { term: "What is a vector database?", back: "A data store purpose-built to index and search high-dimensional embedding vectors efficiently — optimized for “find nearest vectors to this one” rather than exact-match queries." },
+        { term: "Why not use SQL?", back: "A traditional relational DB has no efficient way to do approximate nearest-neighbor search over high-dimensional vectors at scale — you'd brute-force compare against every row, which doesn't scale." },
+        { term: "What is nearest-neighbor search?", back: "Finding the k vectors in the index closest to a query vector by some distance metric (cosine, dot product, Euclidean) — the core operation behind semantic retrieval." },
+        { term: "What is HNSW?", back: "Hierarchical Navigable Small World — a graph-based approximate nearest-neighbor index that searches millions of vectors in milliseconds, trading a little accuracy for large speed gains versus brute force." },
+        { term: "What is metadata filtering?", back: "Narrowing a vector search to only vectors matching certain metadata (e.g. department=“legal”, date>2024) — combines structured filtering with semantic search so you don't retrieve semantically-similar-but-wrong results." },
+        { term: "What is hybrid search?", back: "Combining semantic (vector) search with traditional keyword/lexical search (e.g. BM25), then merging/re-ranking results — catches cases where exact terms (IDs, names) matter as much as meaning." },
+        { term: "Difference between Pinecone and pgvector?", back: "Pinecone is a managed, purpose-built vector database service that scales independently and handles indexing/ops for you. pgvector adds vector search to an existing Postgres database — simpler ops if you're already on Postgres, different scaling profile at very high volume." },
+        { term: "How do vector indexes improve performance?", back: "By pre-organizing vectors (graphs, trees, clusters) so a query only compares against a relevant subset instead of every stored vector — what makes approximate nearest-neighbor search fast at scale." },
+        { term: "What happens with millions of embeddings?", back: "Brute-force search becomes too slow; you need approximate indexes (HNSW, IVF), sharding/partitioning, and careful memory/cost planning since indexes for millions of high-dim vectors get large." },
+        { term: "What are limitations of vector DBs?", back: "Approximate search occasionally misses the true best match; weaker at exact/structured queries (pair with metadata filters); index rebuilds can be costly at scale; and results are only as good as the embeddings feeding them." }
+      ],
+      quiz: [
+        { q: "Why not just use SQL for semantic search?", options: ["SQL databases can't store numbers", "Relational DBs have no efficient way to do approximate nearest-neighbor search over high-dim vectors at scale", "SQL is always more expensive than a vector DB", "SQL can't store text"], a: 1 },
+        { q: "HNSW is:", options: ["A chunking strategy", "A graph-based approximate nearest-neighbor index for fast vector search", "A prompt template format", "An embedding model"], a: 1 },
+        { q: "Hybrid search combines:", options: ["Two different LLMs", "Semantic (vector) search with keyword/lexical search, then merges the results", "Fine-tuning with RAG", "Batch and streaming pipelines"], a: 1 }
+      ]
+    },
+    {
+      title: "Agents",
+      cards: [
+        { term: "What is an AI agent?", back: "A system where an LLM doesn't just answer once, but plans and takes a sequence of actions — calling tools/APIs, using their outputs — toward a goal, deciding at each step what to do next." },
+        { term: "Difference between agent and chatbot?", back: "A chatbot responds to messages. An agent can take actions in the world (call APIs, read/write data, chain multiple steps) and adapt its next step based on the result of the previous one." },
+        { term: "What is tool calling?", back: "The mechanism agents use to act — the LLM outputs a structured request to invoke a specific function/API with arguments; your system executes it and the result is fed back for the next step." },
+        { term: "What is agent memory?", back: "State the agent carries across steps or sessions — short-term (the current task's scratchpad) and long-term (persisted facts/preferences retrieved later), often backed by a vector store or database." },
+        { term: "What is a multi-agent system?", back: "Multiple specialized agents (e.g. a planner, a researcher, a coder) collaborating on a task, each with a narrower role, coordinated by an orchestrator — used when a single agent's context/skillset gets overloaded." },
+        { term: "What is planning vs execution?", back: "Planning is deciding the sequence of steps needed to reach a goal; execution is actually carrying out each step. Some architectures separate these so a bad plan can be caught before acting." },
+        { term: "Risks of autonomous agents?", back: "Taking an incorrect or destructive action confidently (deleting data, sending a message, spending money), looping or getting stuck, cascading errors across multi-step chains, and acting on hallucinated intermediate “facts.”" },
+        { term: "How do you prevent harmful actions?", back: "Scope tool permissions tightly, require human approval for irreversible/high-impact actions, add guardrails/validation before executing a tool call, log everything, and cap autonomy (max steps, sandboxing)." },
+        { term: "When should you avoid agents?", back: "When the task is simple/single-step (a plain prompt or RAG call is cheaper and more predictable), when actions are high-stakes and irreversible without review, or when you need strict determinism an agent loop can't guarantee." },
+        { term: "What is human-in-the-loop?", back: "Requiring explicit human approval at defined checkpoints — before a risky action, before publishing an output — rather than letting the agent run fully autonomously. The standard mitigation for agent risk in production." }
+      ],
+      quiz: [
+        { q: "The key difference between an agent and a chatbot is:", options: ["Agents are always faster to respond", "Agents take multi-step actions via tools and adapt based on results, not just reply once", "Chatbots use embeddings and agents don't", "Agents never use an LLM"], a: 1 },
+        { q: "The standard mitigation for risky autonomous agent actions is:", options: ["Increasing the temperature", "Human-in-the-loop approval at key checkpoints", "Removing all logging", "Giving the agent unrestricted permissions"], a: 1 },
+        { q: "Agent memory refers to:", options: ["The GPU RAM used during inference", "State carried across steps/sessions, such as a scratchpad or persisted long-term facts", "The size of the context window only", "A caching layer for HTTP requests"], a: 1 }
+      ]
+    },
+    {
+      title: "Production Architecture",
+      cards: [
+        { term: "How do you move a prototype into production?", back: "Add reliability (error handling, retries, timeouts), observability (logging, monitoring, tracing), security (auth, secrets management), scalability (stateless services, queues), automated testing/CI-CD, and a clear ownership/support model. The happy-path logic is usually the smallest part of the work." },
+        { term: "What is a microservice?", back: "An independently deployable service responsible for one bounded piece of functionality, communicating with others over the network — as opposed to one large monolith." },
+        { term: "What is an API gateway?", back: "A single entry point in front of your services, handling routing, auth, rate limiting, and request/response transformation. Clients talk to the gateway, not directly to every backend service." },
+        { term: "Why use Docker?", back: "To package an application with its exact dependencies into a portable, reproducible container — “works on my machine” becomes “works the same everywhere,” including CI and production." },
+        { term: "Why use Kubernetes?", back: "To orchestrate containers at scale — automated deployment, scaling up/down based on load, self-healing (restarting failed containers), and rolling updates without downtime." },
+        { term: "Stateless vs stateful services?", back: "Stateless services keep no session/data between requests, so any instance can handle any request (trivial to scale horizontally). Stateful services hold data locally, making scaling/failover harder — production pushes state into external stores instead." },
+        { term: "How would you scale inference?", back: "Batch requests where possible, use async/queued processing for non-real-time needs, cache repeated queries/embeddings, load-balance across multiple model replicas, and consider smaller/distilled models for latency-sensitive paths." },
+        { term: "What bottlenecks exist?", back: "LLM API latency/rate limits, vector search at scale, database I/O, single-threaded request handling, and cost caps — the LLM call itself is often the slowest and most expensive part of the request path." },
+        { term: "Why use queues?", back: "To decouple slow/bursty work (like LLM calls) from the request-response cycle — a request gets queued, processed asynchronously, and the result delivered later, so load spikes don't take the whole system down." },
+        { term: "How would you design a production chatbot architecture?", back: "Client → API gateway → orchestration service (auth, rate limiting, conversation state) → retrieval layer (vector DB) → LLM call (with monitoring/guardrails) → response, with logging/tracing at every hop, a cache layer, and async handling for anything non-blocking." }
+      ],
+      quiz: [
+        { q: "Moving a prototype to production mainly adds:", options: ["More user-facing features", "Reliability, observability, security, scalability, and a support/ownership model", "A nicer UI only", "Nothing — good code is good code"], a: 1 },
+        { q: "Why keep services stateless where possible?", options: ["It's required by Docker", "Any instance can handle any request, making horizontal scaling and failover simple", "Stateless services are always faster to code", "Stateless means no database is needed"], a: 1 },
+        { q: "Queues are used in production LLM systems to:", options: ["Replace the vector database", "Decouple slow/bursty LLM calls from the request-response cycle so spikes don't take the system down", "Store embeddings permanently", "Speed up tokenization"], a: 1 }
+      ]
+    },
+    {
+      title: "DataOps / Pipelines",
+      cards: [
+        { term: "ETL vs ELT?", back: "ETL transforms data before loading it into the destination. ELT loads raw data first and transforms it inside the destination (common with modern cloud warehouses with strong transform compute)." },
+        { term: "Batch vs streaming?", back: "Batch processes data in scheduled chunks (hourly/daily); streaming processes each event as it arrives, near real-time. Choice depends on how fresh downstream consumers — like an AI system — need the data." },
+        { term: "What is data lineage?", back: "The traceable record of where a piece of data came from and what transformations it went through — critical for debugging bad output and for compliance/audit." },
+        { term: "What is data quality?", back: "How accurate, complete, consistent, and timely your data is. For AI pipelines specifically, bad quality directly becomes bad model/RAG output, not just a wrong dashboard number." },
+        { term: "How do you make pipelines reliable?", back: "Validation checks at each stage, retries with backoff, idempotent processing (safe to re-run), monitoring/alerting on failures, and clear ownership for when something breaks." },
+        { term: "What happens if ingestion fails?", back: "Ideally it's retried automatically, failures are logged/alerted, and the pipeline either skips-and-flags the bad batch or halts to avoid propagating corrupt/partial data downstream." },
+        { term: "What is schema evolution?", back: "Handling changes to your data's structure over time — new fields, renamed columns, type changes — without breaking downstream consumers, usually via versioned schemas and compatibility rules." },
+        { term: "How do you version data?", back: "Snapshotting or tagging datasets at points in time (or using tools like DVC/lakeFS) so you can reproduce exactly what a model/pipeline saw at a given moment — essential for debugging and rollback." },
+        { term: "What is orchestration?", back: "Coordinating the order, dependencies, retries, and scheduling of pipeline tasks — e.g. “don't run the embedding job until ingestion succeeds” — rather than running scripts manually or via cron with no dependency awareness." },
+        { term: "Why use Airflow?", back: "It's a widely-used orchestration tool that lets you define pipelines as DAGs of tasks with dependencies, scheduling, retries, and monitoring built in — the standard answer for managing complex multi-step data pipelines." }
+      ],
+      quiz: [
+        { q: "ELT differs from ETL in that:", options: ["ELT never transforms data", "ELT loads raw data first, then transforms it inside the destination system", "ELT is only usable for streaming data", "They are identical"], a: 1 },
+        { q: "Why does data quality matter more for AI pipelines?", options: ["It doesn't — AI is robust to bad data", "Bad input produces confidently wrong output, not just a wrong dashboard number", "AI systems don't use data pipelines", "It only affects storage cost"], a: 1 },
+        { q: "Airflow is primarily used for:", options: ["Training LLMs", "Orchestrating pipeline tasks as DAGs with dependencies, scheduling, and retries", "Embedding text", "Hosting a vector database"], a: 1 }
+      ]
+    },
+    {
+      title: "CI/CD & LLMOps",
+      cards: [
+        { term: "What does CI/CD mean for AI?", back: "Continuous Integration/Deployment adapted for AI systems — automatically testing and deploying not just code, but prompts, model versions, and pipeline configs, with the same rigor as software (tests before merge, staged rollouts)." },
+        { term: "How do you version prompts?", back: "Treat prompts as code — store them in version control, tag versions, track which version is live in which environment, and be able to diff/roll back exactly like any other config change." },
+        { term: "How do you version models?", back: "Track model provider + version/snapshot explicitly, since models silently change behavior between versions. Pin a specific version in production and only upgrade after re-running your eval suite against it." },
+        { term: "What is a rollback strategy?", back: "A predefined, fast way to revert to the last known-good prompt/model/pipeline version if a new deployment causes quality or reliability regressions — rehearsed in advance, not improvised." },
+        { term: "Blue-Green deployment?", back: "Running two identical production environments (blue = current, green = new). You deploy to green, verify it, then switch traffic over — instant rollback by switching back to blue if something's wrong." },
+        { term: "Canary deployment?", back: "Rolling out a change to a small percentage of traffic/users first, monitoring closely, then gradually increasing — limits the blast radius of a bad prompt/model change before it hits everyone." },
+        { term: "How do you test prompts?", back: "Run them against a curated eval set — representative and edge-case inputs with expected behaviors/scoring — ideally automated in CI, so a prompt change can't ship without passing regression checks." },
+        { term: "How do you deploy safely?", back: "Test against an eval suite, use canary/blue-green rollout, monitor key metrics closely post-deploy, and have a fast rollback path ready before you need it." },
+        { term: "What is experiment tracking?", back: "Systematically logging prompt/model/parameter versions alongside their eval results and metrics (e.g. MLflow/Weights & Biases) so you can compare runs and know exactly what produced which outcome." },
+        { term: "What tools have you used?", back: "Answer honestly and specifically from your own experience — naming real tools (e.g. an orchestrator, a vector DB, an eval/tracking tool) and what you used each for is stronger than a generic list." }
+      ],
+      quiz: [
+        { q: "Canary deployment means:", options: ["Deploying to 100% of traffic immediately", "Rolling out a change to a small percentage of traffic first, then gradually increasing", "Running two identical environments and switching all at once", "Never deploying automatically"], a: 1 },
+        { q: "Why version prompts like code?", options: ["It's a legal requirement", "Behavior drifts over time, so you need to track, diff, and roll back changes", "Prompts don't actually affect output", "To make prompts longer"], a: 1 },
+        { q: "Why pin a specific model version in production?", options: ["Models never change behavior between versions", "Providers can silently update models, changing behavior — pinning avoids surprise regressions", "Pinning is required by GDPR", "It automatically reduces token cost"], a: 1 }
+      ]
+    },
+    {
+      title: "Monitoring & Evaluation",
+      cards: [
+        { term: "What should be monitored?", back: "Output quality/accuracy over time, latency, cost per request, error/failure rates, retrieval quality (for RAG), and any safety/guardrail trigger rates — not just uptime." },
+        { term: "How do you measure hallucinations?", back: "Automated fact-checking against retrieved/ground-truth sources, human or LLM-as-judge scoring on a sample of outputs, and tracking rates of “answer not supported by provided context” flags." },
+        { term: "How do you detect retrieval failures?", back: "Track relevance scores of returned chunks, monitor for queries returning no/low-confidence matches, and periodically sample whether the retrieved context actually supports the final answer." },
+        { term: "What metrics matter?", back: "Commonly: answer accuracy/groundedness, latency (p50/p95), cost per query, retrieval precision/recall, user satisfaction/thumbs-up rate, and escalation/error rate — the exact mix depends on the system." },
+        { term: "How do you monitor costs?", back: "Track token usage and spend per request/user/feature, set budget alerts, and break cost down by model/step so you can see exactly where spend concentrates." },
+        { term: "What is data drift?", back: "When the distribution of incoming data (queries, documents) shifts over time from what the system was built/tested against — e.g. users start asking fundamentally different questions than in your eval set." },
+        { term: "What is model drift?", back: "When a model's behavior changes over time — because the provider silently updated it, or because the world it's answering about changed — causing previously good answers to degrade." },
+        { term: "How do you evaluate RAG?", back: "Separately score retrieval (are the right chunks coming back — precision/recall) and generation (given good context, is the answer accurate/grounded). Conflating the two hides which half is actually broken." },
+        { term: "How do you evaluate agents?", back: "Task success rate (did it achieve the goal), step efficiency (unnecessary loops/actions), safety (did it avoid harmful/incorrect actions), and whether it asked for human input appropriately when uncertain." },
+        { term: "How do you know a system degraded?", back: "A defined baseline plus alerting on deviation — quality scores dropping, error rates rising, latency creeping up, or complaint/thumbs-down rates spiking versus your established baseline, not just “someone noticed.”" }
+      ],
+      quiz: [
+        { q: "Evaluating RAG should separate:", options: ["Cost and latency only", "Retrieval quality (right chunks?) from generation quality (grounded answer?)", "Frontend performance from backend performance", "Docker from Kubernetes"], a: 1 },
+        { q: "Data drift refers to:", options: ["A bug in the vector database", "The distribution of incoming queries/documents shifting over time from what the system was built against", "A model being deployed twice", "Increasing the temperature setting"], a: 1 },
+        { q: "A good way to know a system has degraded is:", options: ["Waiting for a user to complain", "A defined baseline with alerting on deviation in quality, error rate, or latency", "Checking the code once a year", "Assuming LLMs never degrade"], a: 1 }
+      ]
+    },
+    {
+      title: "Security & Governance",
+      cards: [
+        { term: "GDPR concerns with LLMs?", back: "Personal data sent to a model — especially third-party/cloud APIs — must be lawfully processed, minimized, and protected. You need clarity on where data is stored/processed, retention, and whether it's used for further training." },
+        { term: "What is PII?", back: "Personally Identifiable Information — anything that can identify a specific person (name, email, ID number, etc.). Needs special handling (masking, restricted access, minimization) anywhere it flows through an AI pipeline." },
+        { term: "How do you protect sensitive data?", back: "Minimize what's sent to the model, mask/redact PII before it reaches the LLM where possible, encrypt in transit/at rest, restrict access via RBAC, and avoid logging raw sensitive content." },
+        { term: "Why are audit logs important?", back: "They let you reconstruct exactly what happened — what data went in, what the model returned, who approved what — essential for debugging, compliance, and accountability, especially for agentic actions." },
+        { term: "What is RBAC?", back: "Role-Based Access Control — granting permissions (what data/tools/actions someone or something can access) based on defined roles rather than per-individual, ad hoc access." },
+        { term: "What is explainability?", back: "The ability to explain why a system produced a given output. For LLMs this is inherently limited (they're not rule-based), so in practice it means showing the retrieved sources/context an answer was grounded in." },
+        { term: "What is the AI Act?", back: "The EU's risk-based regulatory framework for AI systems — imposing obligations (transparency, documentation, human oversight, risk assessment) that scale with how high-risk the AI use case is." },
+        { term: "Why is human oversight important?", back: "Because LLMs/agents can be confidently wrong or take unintended actions — human review at key checkpoints is the practical safety net until systems are proven reliable enough to run fully unsupervised." },
+        { term: "How would you document an AI system?", back: "Purpose/scope, data sources and flows, model(s) used, known limitations/risk assessment, monitoring/evaluation approach, and who owns/approves changes — enough for a non-engineer reviewer to understand and sign off." },
+        { term: "Risks of public-sector AI systems?", back: "Higher scrutiny and accountability, higher reputational/political risk if something goes publicly wrong, need for transparency toward citizens, and often stricter data protection and procurement rules than private-sector deployments." }
+      ],
+      quiz: [
+        { q: "RBAC stands for:", options: ["Rule-Based Access Control", "Role-Based Access Control", "Retrieval-Based Access Control", "Random-Based Access Control"], a: 1 },
+        { q: "Why are audit logs important for agentic systems?", options: ["They aren't — agents are self-explanatory", "They let you reconstruct exactly what data went in, what happened, and who approved what", "They speed up inference", "They replace the need for testing"], a: 1 },
+        { q: "The EU AI Act is best described as:", options: ["A voluntary style guide", "A risk-based regulatory framework imposing obligations that scale with how high-risk an AI use case is", "A vector database standard", "A prompt engineering framework"], a: 1 }
+      ]
+    },
+    {
+      title: "Scenario Questions",
+      cards: [
+        { term: "A chatbot suddenly becomes inaccurate. How do you debug it?", back: "Check for a silent model/provider update first, then recent prompt/config changes, then whether retrieval quality dropped (stale/broken index), then whether users started asking a new type of query the system wasn't built for." },
+        { term: "Users complain about latency. What do you investigate?", back: "Break down the request path — LLM call time, retrieval/vector search time, network hops, queue backlog — measure each stage rather than guessing; check for a specific model, a load spike, or a slow downstream dependency." },
+        { term: "You need to support 10,000 users. What changes?", back: "Move to async/queued processing, add caching for repeated queries, horizontally scale stateless services, load-balance across model replicas/providers, and revisit cost per request at that volume." },
+        { term: "The knowledge base changes daily. What architecture do you choose?", back: "RAG with an automated re-ingestion/re-embedding pipeline, not a one-time load — scheduled or event-driven updates to the vector index, plus versioning so you know which index state answered which query." },
+        { term: "Documents contain many tables and PDFs. What challenges exist?", back: "Standard text extraction mangles tables and PDF layout; you need specialized parsing (table-aware extraction, OCR for scans) and often a different chunking/serialization strategy per content type." },
+        { term: "An agent performed an incorrect action. What safeguards do you add?", back: "A human-approval step before similar high-impact actions, a tighter permission scope on the tool, validation/guardrails on the agent's proposed action before execution, and logging the failure to update your eval set." },
+        { term: "Management wants to move from PoC to production. What is needed?", back: "Reliability engineering (error handling, retries, monitoring), a security review, defined SLAs, an eval/testing process, cost modeling at real scale, and a clear ownership/support model — the PoC's core logic is usually the smallest remaining piece." },
+        { term: "A model update made answers worse. What do you do?", back: "Roll back to the last pinned known-good model version if possible, re-run your eval suite against the new version to quantify the regression, and only re-adopt it once prompts/evals are adjusted and passing." },
+        { term: "The legal department rejects cloud usage. What alternatives exist?", back: "Self-hosted open-weight models on-prem or in a sovereign/private cloud, an on-prem vector DB and pipeline, and stricter data-handling controls — trading some capability/convenience for data residency and compliance guarantees." },
+        { term: "Design an internal AI platform from scratch.", back: "Ingestion/data pipeline, embedding + vector store, an LLM gateway abstracting providers (auth, logging, cost), an orchestration layer for agents/RAG, monitoring/eval tooling, and a governance layer (access control, audit logs) — built as reusable infrastructure other teams plug into, not a one-off app." }
+      ],
+      quiz: [
+        { q: "A chatbot suddenly gives worse answers with no code changes. First thing to check:", options: ["Rewrite the whole system", "Whether the model provider silently updated the model version", "Increase the context window", "Switch cloud providers"], a: 1 },
+        { q: "Users report high latency. Best first step:", options: ["Guess and add more servers", "Break down the request path and measure latency at each stage (LLM call, retrieval, network)", "Immediately lower the temperature", "Ignore it — LLMs are always slow"], a: 1 },
+        { q: "Documents contain many tables/PDFs. The main risk is:", options: ["Embeddings cost more to compute", "Naive text extraction destroys table structure, requiring specialized parsing", "Vector databases can't store PDFs at all", "Tables can never be chunked"], a: 1 }
+      ]
+    }
+  ];
+
+  var PRIORITY = [
+    { q: "Explain RAG.", ref: "Module 4 — RAG Pipeline",
+      back: "Retrieval-Augmented Generation: instead of relying only on the model's frozen training data, you retrieve relevant chunks from an external knowledge source via embeddings + vector search, and inject them into the prompt before generation. This grounds answers in current, specific, or private information and lets you cite sources — without retraining the model." },
+    { q: "RAG vs Fine-tuning.", ref: "Module 2 — Prompting vs RAG vs Fine-Tuning",
+      back: "RAG injects external knowledge at query time — cheap to update, traceable to source, ideal for facts that change. Fine-tuning changes the model's weights to bake in behavior/style/format — better for consistency, not for facts that go stale. Production systems often use both: fine-tune for voice, RAG for current facts." },
+    { q: "Explain embeddings.", ref: "Module 3 — Embeddings",
+      back: "A vector representation of text where semantic meaning becomes geometric closeness — similar meaning, similar vector. Produced by an embedding model, compared via cosine similarity, and the foundation that makes semantic (not just keyword) search possible." },
+    { q: "Explain vector databases.", ref: "Module 5 — Vector Databases",
+      back: "A database purpose-built to index and search embedding vectors at scale, using approximate nearest-neighbor algorithms like HNSW instead of brute-force comparison. Usually paired with metadata filtering and sometimes keyword search (hybrid search) for precision." },
+    { q: "How would you productionize a chatbot?", ref: "Module 7 — Production Architecture",
+      back: "Wrap the prototype's happy-path logic with reliability (retries, error handling, timeouts), observability (logging, tracing, monitoring), security (auth, secrets, PII handling), scalability (stateless services, queues, caching), automated testing/CI-CD for prompts and models, and a defined ownership/support model." },
+    { q: "How do you monitor AI systems?", ref: "Module 10 — Monitoring & Evaluation",
+      back: "Track output quality/groundedness over time, latency, cost per request, error and retrieval-failure rates, and any guardrail triggers — with a defined baseline and alerting on deviation, not just uptime monitoring." },
+    { q: "What is an AI agent?", ref: "Module 6 — Agents",
+      back: "An LLM-driven system that plans and executes a sequence of actions — calling tools/APIs, using their results to decide the next step — toward a goal, rather than producing one static reply. Needs scoped permissions and human checkpoints for anything risky." },
+    { q: "How do you integrate LLMs into existing platforms?", ref: "Module 7 — Production Architecture",
+      back: "Through defined interfaces, not ad hoc scripts: an API/gateway layer that abstracts the model provider, respects existing auth/data constraints, and exposes tool-calling or RAG endpoints the rest of the platform can call — so the LLM becomes a component of the system, not a bolt-on." },
+    { q: "How do you ensure governance and compliance?", ref: "Module 11 — Security & Governance",
+      back: "Document data flows, model usage, and known limitations; enforce access control (RBAC) and PII protection; keep audit logs of inputs, outputs, and approvals; and keep a human oversight checkpoint for high-impact decisions — enough that a non-engineer reviewer can sign off." },
+    { q: "How do you transfer prototypes into stable operating models?", ref: "Module 7 & 12 — Production Architecture / Scenarios",
+      back: "Define who owns the system, how it's monitored, what the support/escalation process is, and what documentation/training exists — then harden the technical side (testing, CI/CD, rollback) so it can run and be maintained without its original builder in the room." }
+  ];
+
+  var state = {
+    mode: "learn",
+    view: "modules",
+    moduleIdx: 0,
+    cardIdx: 0,
+    priorityIdx: 0,
+    flipped: {},
+    score: 0,
+    streak: 0,
+    quizQueue: [],
+    quizTotal: 0,
+    quizStarted: false,
+    solved: {},
+    currentQ: null,
+    answered: false,
+    lastChoice: null
+  };
+
+  function moduleMastered(mi) {
+    var m = MODULES[mi];
+    for (var i = 0; i < m.quiz.length; i++) {
+      if (!state.solved[mi + "-" + i]) return false;
+    }
+    return true;
+  }
+
+  function masteredCount() {
+    var c = 0;
+    for (var i = 0; i < MODULES.length; i++) if (moduleMastered(i)) c++;
+    return c;
+  }
+
+  function buildQueue() {
+    var q = [];
+    for (var mi = 0; mi < MODULES.length; mi++) {
+      for (var qi = 0; qi < MODULES[mi].quiz.length; qi++) {
+        var key = mi + "-" + qi;
+        if (!state.solved[key]) q.push({ mi: mi, qi: qi, key: key });
+      }
+    }
+    for (var i = q.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = q[i]; q[i] = q[j]; q[j] = tmp;
+    }
+    return q;
+  }
+
+  function renderHud() {
+    document.getElementById("hud-score").textContent = state.score;
+    document.getElementById("hud-streak").textContent = state.streak;
+    document.getElementById("hud-mastered").textContent = masteredCount() + "/" + MODULES.length;
+  }
+
+  function renderRail() {
+    var rail = document.getElementById("rail");
+    var priorityActive = state.mode === "learn" && state.view === "priority";
+    var html = '<button class="node priority' + (priorityActive ? " active" : "") + '" id="node-priority">' +
+      '<span class="node-id">★</span><span class="node-label">Bet-Money 10</span></button>' +
+      '<div class="rail-divider"></div>' +
+      '<div class="rail-title">Modules</div>';
+    MODULES.forEach(function (m, i) {
+      var mastered = moduleMastered(i);
+      var active = state.mode === "learn" && state.view === "modules" && i === state.moduleIdx;
+      html += '<button class="node' + (active ? " active" : "") +
+        (mastered ? " mastered" : "") + '" data-idx="' + i + '" role="listitem">' +
+        '<span class="node-thread"></span>' +
+        '<span class="node-id">' + (mastered ? "✓" : (i + 1)) + '</span>' +
+        '<span class="node-label">' + m.title + '</span></button>';
+    });
+    rail.innerHTML = html;
+    document.getElementById("node-priority").addEventListener("click", function () {
+      state.view = "priority";
+      setMode("learn");
+    });
+    Array.prototype.forEach.call(rail.querySelectorAll(".node[data-idx]"), function (btn) {
+      btn.addEventListener("click", function () {
+        state.moduleIdx = parseInt(btn.getAttribute("data-idx"), 10);
+        state.cardIdx = 0;
+        state.view = "modules";
+        setMode("learn");
+      });
+    });
+  }
+
+  function renderLearn() {
+    if (state.view === "priority") { renderPriorityLearn(); return; }
+    var stage = document.getElementById("stage");
+    var m = MODULES[state.moduleIdx];
+    var card = m.cards[state.cardIdx];
+    var flipKey = "m" + state.moduleIdx + "-" + state.cardIdx;
+    var flipped = !!state.flipped[flipKey];
+
+    var html = '<div class="stage-header">' +
+      '<span class="stage-eyebrow">Module ' + (state.moduleIdx + 1) + ' of ' + MODULES.length + ' &middot; Learn</span>' +
+      '<h2 class="stage-title">' + m.title + '</h2></div>';
+
+    html += '<div class="flip-card' + (flipped ? " flipped" : "") + '" id="flip-card">' +
+      '<div class="flip-inner">' +
+      '<div class="flip-face flip-front"><span class="q-mark">Card ' + (state.cardIdx + 1) + ' / ' + m.cards.length + '</span>' +
+      '<div class="term">' + card.term + '</div>' +
+      '<span class="flip-hint">Click to flip</span></div>' +
+      '<div class="flip-face flip-back"><div>' + card.back + '</div>' +
+      '<span class="flip-hint">Click to flip back</span></div>' +
+      '</div></div>';
+
+    html += '<div class="stage-nav">' +
+      '<button id="card-prev"' + (state.cardIdx === 0 ? " disabled" : "") + '>← Prev</button>' +
+      '<span class="pos">' + (state.cardIdx + 1) + ' / ' + m.cards.length + '</span>' +
+      '<button id="card-next"' + (state.cardIdx === m.cards.length - 1 ? " disabled" : "") + '>Next →</button>' +
+      '</div>';
+
+    stage.innerHTML = html;
+
+    document.getElementById("flip-card").addEventListener("click", function () {
+      state.flipped[flipKey] = !state.flipped[flipKey];
+      renderLearn();
+    });
+    var prevBtn = document.getElementById("card-prev");
+    var nextBtn = document.getElementById("card-next");
+    if (prevBtn) prevBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (state.cardIdx > 0) { state.cardIdx--; renderLearn(); }
+    });
+    if (nextBtn) nextBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (state.cardIdx < m.cards.length - 1) { state.cardIdx++; renderLearn(); }
+    });
+  }
+
+  function renderPriorityLearn() {
+    var stage = document.getElementById("stage");
+    var item = PRIORITY[state.priorityIdx];
+    var flipKey = "p" + state.priorityIdx;
+    var flipped = !!state.flipped[flipKey];
+
+    var html = '<div class="stage-header">' +
+      '<span class="stage-eyebrow priority">★ Bet-Money 10 &middot; ' + (state.priorityIdx + 1) + ' of ' + PRIORITY.length + '</span>' +
+      '<h2 class="stage-title">Highest-probability questions</h2></div>';
+
+    html += '<div class="flip-card' + (flipped ? " flipped" : "") + '" id="flip-card">' +
+      '<div class="flip-inner">' +
+      '<div class="flip-face flip-front"><span class="q-mark">Priority ' + (state.priorityIdx + 1) + ' / ' + PRIORITY.length + '</span>' +
+      '<div class="term">' + item.q + '</div>' +
+      '<span class="flip-hint">Click to flip</span></div>' +
+      '<div class="flip-face flip-back priority-back"><div>' + item.back + '</div>' +
+      '<div class="priority-ref">↳ Deep dive: ' + item.ref + '</div>' +
+      '<span class="flip-hint">Click to flip back</span></div>' +
+      '</div></div>';
+
+    html += '<div class="stage-nav">' +
+      '<button id="card-prev"' + (state.priorityIdx === 0 ? " disabled" : "") + '>← Prev</button>' +
+      '<span class="pos">' + (state.priorityIdx + 1) + ' / ' + PRIORITY.length + '</span>' +
+      '<button id="card-next"' + (state.priorityIdx === PRIORITY.length - 1 ? " disabled" : "") + '>Next →</button>' +
+      '</div>';
+
+    stage.innerHTML = html;
+
+    document.getElementById("flip-card").addEventListener("click", function () {
+      state.flipped[flipKey] = !state.flipped[flipKey];
+      renderPriorityLearn();
+    });
+    var prevBtn = document.getElementById("card-prev");
+    var nextBtn = document.getElementById("card-next");
+    if (prevBtn) prevBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (state.priorityIdx > 0) { state.priorityIdx--; renderPriorityLearn(); }
+    });
+    if (nextBtn) nextBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (state.priorityIdx < PRIORITY.length - 1) { state.priorityIdx++; renderPriorityLearn(); }
+    });
+  }
+
+  function nextQuizQuestion() {
+    if (state.quizQueue.length === 0) {
+      state.currentQ = null;
+      renderQuiz();
+      return;
+    }
+    state.currentQ = state.quizQueue.shift();
+    state.answered = false;
+    renderQuiz();
+  }
+
+  function totalQuestionCount() {
+    var t = 0;
+    MODULES.forEach(function (m) { t += m.quiz.length; });
+    return t;
+  }
+
+  function remainingUnsolved() {
+    var t = 0;
+    MODULES.forEach(function (m, mi) {
+      m.quiz.forEach(function (_, qi) {
+        if (!state.solved[mi + "-" + qi]) t++;
+      });
+    });
+    return t;
+  }
+
+  function renderQuiz() {
+    var stage = document.getElementById("stage");
+    renderHud();
+
+    if (!state.currentQ) {
+      var allDone = remainingUnsolved() === 0 && state.quizStarted;
+      if (allDone) {
+        stage.innerHTML =
+          '<div class="empty-state"><div class="big">✓</div>' +
+          '<h2>All ' + state.quizTotal + ' questions cleared</h2>' +
+          '<p>Score ' + state.score + ' for this run. Restart to drill the whole set again, or jump back to Learn for a quick re-read.</p>' +
+          '<button id="quiz-restart">Restart quiz</button></div>';
+      } else {
+        stage.innerHTML =
+          '<div class="empty-state"><div class="big">→</div>' +
+          '<h2>Ready when you are</h2>' +
+          '<p>Starts a shuffled run across all ' + MODULES.length + ' modules (' + totalQuestionCount() + ' questions). Wrong answers get requeued so you see them again until they stick.</p>' +
+          '<button id="quiz-restart">Start quiz</button></div>';
+      }
+      document.getElementById("quiz-restart").addEventListener("click", function () {
+        state.solved = {};
+        state.score = 0;
+        state.streak = 0;
+        state.quizStarted = true;
+        state.quizTotal = totalQuestionCount();
+        state.quizQueue = buildQueue();
+        renderRail();
+        nextQuizQuestion();
+      });
+      return;
+    }
+
+    var m = MODULES[state.currentQ.mi];
+    var q = m.quiz[state.currentQ.qi];
+    var solvedCount = state.quizTotal - remainingUnsolved();
+
+    var html = '<div class="stage-header"><span class="stage-eyebrow">Quiz &middot; ' + solvedCount + ' / ' + state.quizTotal + ' cleared</span>' +
+      '<div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:' +
+      Math.round(100 * (solvedCount / Math.max(state.quizTotal, 1))) + '%"></div></div></div>';
+
+    html += '<div class="quiz-card"><span class="quiz-module-tag">' + m.title + '</span>' +
+      '<div class="quiz-question">' + q.q + '</div>' +
+      '<div class="quiz-options" id="quiz-options">';
+
+    var letters = ["A", "B", "C", "D"];
+    var disabledAttr = state.answered ? " disabled" : "";
+    q.options.forEach(function (opt, i) {
+      var cls = "quiz-option";
+      if (state.answered) {
+        if (i === q.a) cls += " correct";
+        else if (i === state.lastChoice) cls += " wrong";
+        else cls += " dim";
+      }
+      html += '<button class="' + cls + '" data-i="' + i + '"' + disabledAttr + '><span class="letter">' + letters[i] + '</span><span>' + opt + '</span></button>';
+    });
+    var fbClass = "quiz-feedback" + (state.answered ? (state.lastChoice === q.a ? " correct" : " wrong") : "");
+    var fbText = state.answered ? (state.lastChoice === q.a ? "Correct." : "Not quite — this one will come back around.") : "";
+    html += '</div><div class="' + fbClass + '" id="quiz-feedback">' + fbText + '</div>';
+    if (state.answered) {
+      html += '<button class="quiz-next" id="quiz-next">Next question →</button>';
+    }
+    html += '</div>';
+
+    stage.innerHTML = html;
+
+    Array.prototype.forEach.call(document.querySelectorAll(".quiz-option"), function (btn) {
+      btn.addEventListener("click", function () {
+        if (state.answered) return;
+        var i = parseInt(btn.getAttribute("data-i"), 10);
+        answerQuestion(i);
+      });
+    });
+    var nextBtn = document.getElementById("quiz-next");
+    if (nextBtn) nextBtn.addEventListener("click", nextQuizQuestion);
+  }
+
+  function answerQuestion(choice) {
+    var m = MODULES[state.currentQ.mi];
+    var q = m.quiz[state.currentQ.qi];
+    var correct = choice === q.a;
+    state.answered = true;
+    state.lastChoice = choice;
+
+    if (correct) {
+      state.score++;
+      state.streak++;
+      state.solved[state.currentQ.key] = true;
+    } else {
+      state.streak = 0;
+      var reinsertAt = Math.min(state.quizQueue.length, 2 + Math.floor(Math.random() * 3));
+      state.quizQueue.splice(reinsertAt, 0, state.currentQ);
+    }
+    renderRail();
+    renderQuiz();
+  }
+
+  function setMode(mode) {
+    state.mode = mode;
+    document.getElementById("btn-learn").classList.toggle("active", mode === "learn");
+    document.getElementById("btn-quiz").classList.toggle("active", mode === "quiz");
+    document.getElementById("btn-learn").setAttribute("aria-selected", mode === "learn");
+    document.getElementById("btn-quiz").setAttribute("aria-selected", mode === "quiz");
+    renderRail();
+    if (mode === "learn") renderLearn();
+    else renderQuiz();
+  }
+
+  document.getElementById("btn-learn").addEventListener("click", function () { setMode("learn"); });
+  document.getElementById("btn-quiz").addEventListener("click", function () { setMode("quiz"); });
+
+  state.quizTotal = totalQuestionCount();
+  renderHud();
+  renderRail();
+  renderLearn();
+})();
+</script>
