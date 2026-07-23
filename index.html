@@ -930,7 +930,7 @@
     score: 0,
     streak: 0,
     quizQueue: [],
-    quizTotal: 0,
+    roundKeys: [],
     quizStarted: false,
     solved: {},
     currentQ: null,
@@ -952,7 +952,9 @@
     return c;
   }
 
-  function buildQueue() {
+  var ROUND_SIZE = 10;
+
+  function unsolvedQueue() {
     var q = [];
     for (var mi = 0; mi < MODULES.length; mi++) {
       for (var qi = 0; qi < MODULES[mi].quiz.length; qi++) {
@@ -965,6 +967,21 @@
       var tmp = q[i]; q[i] = q[j]; q[j] = tmp;
     }
     return q;
+  }
+
+  function startRound() {
+    var pool = unsolvedQueue();
+    if (pool.length === 0) {
+      state.solved = {};
+      state.score = 0;
+      state.streak = 0;
+      pool = unsolvedQueue();
+    }
+    state.quizQueue = pool.slice(0, ROUND_SIZE);
+    state.roundKeys = state.quizQueue.map(function (item) { return item.key; });
+    state.quizStarted = true;
+    renderRail();
+    nextQuizQuestion();
   }
 
   function solvedCount() { return Object.keys(state.solved).length; }
@@ -1147,55 +1164,46 @@
     return t;
   }
 
-  function remainingUnsolved() {
-    var t = 0;
-    MODULES.forEach(function (m, mi) {
-      m.quiz.forEach(function (_, qi) {
-        if (!state.solved[mi + "-" + qi]) t++;
-      });
-    });
-    return t;
-  }
-
   function renderQuiz() {
     var stage = document.getElementById("stage");
     renderHud();
 
     if (!state.currentQ) {
-      var allDone = remainingUnsolved() === 0 && state.quizStarted;
-      if (allDone) {
-        stage.innerHTML =
-          '<div class="empty-state"><div class="big">✓</div>' +
-          '<h2>All ' + state.quizTotal + ' questions cleared</h2>' +
-          '<p>Score ' + state.score + ' for this run. Restart to drill the whole set again, or jump back to Learn for a quick re-read.</p>' +
-          '<button id="quiz-restart">Restart quiz</button></div>';
+      var bankRemaining = unsolvedQueue().length;
+      if (state.quizStarted) {
+        var justCleared = state.roundKeys.length;
+        if (bankRemaining === 0) {
+          stage.innerHTML =
+            '<div class="empty-state"><div class="big">🏆</div>' +
+            '<h2>All ' + totalQuestionCount() + ' questions cleared!</h2>' +
+            '<p>Score ' + state.score + ' total. Play again to reshuffle the whole bank and drill it once more.</p>' +
+            '<button id="quiz-restart">Play again</button></div>';
+        } else {
+          stage.innerHTML =
+            '<div class="empty-state"><div class="big">🎯</div>' +
+            '<h2>Round cleared — ' + justCleared + '/' + justCleared + '</h2>' +
+            '<p>' + bankRemaining + ' question' + (bankRemaining === 1 ? "" : "s") + ' left in the bank. Keep the streak going with another round.</p>' +
+            '<button id="quiz-restart">Next round →</button></div>';
+        }
       } else {
         stage.innerHTML =
           '<div class="empty-state"><div class="big">→</div>' +
           '<h2>Ready when you are</h2>' +
-          '<p>Starts a shuffled run across all ' + MODULES.length + ' modules (' + totalQuestionCount() + ' questions). Wrong answers get requeued so you see them again until they stick.</p>' +
+          '<p>Each round is a shuffled set of ' + ROUND_SIZE + ' questions pulled from all ' + MODULES.length + ' modules (' + totalQuestionCount() + ' total). Wrong answers get requeued so you see them again until they stick.</p>' +
           '<button id="quiz-restart">Start quiz</button></div>';
       }
-      document.getElementById("quiz-restart").addEventListener("click", function () {
-        state.solved = {};
-        state.score = 0;
-        state.streak = 0;
-        state.quizStarted = true;
-        state.quizTotal = totalQuestionCount();
-        state.quizQueue = buildQueue();
-        renderRail();
-        nextQuizQuestion();
-      });
+      document.getElementById("quiz-restart").addEventListener("click", startRound);
       return;
     }
 
     var m = MODULES[state.currentQ.mi];
     var q = m.quiz[state.currentQ.qi];
-    var solvedCount = state.quizTotal - remainingUnsolved();
+    var solvedInRound = state.roundKeys.filter(function (k) { return state.solved[k]; }).length;
+    var roundTotal = state.roundKeys.length;
 
-    var html = '<div class="stage-header"><span class="stage-eyebrow">Quiz &middot; ' + solvedCount + ' / ' + state.quizTotal + ' cleared</span>' +
+    var html = '<div class="stage-header"><span class="stage-eyebrow">Quiz &middot; round ' + solvedInRound + ' / ' + roundTotal + ' cleared</span>' +
       '<div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:' +
-      Math.round(100 * (solvedCount / Math.max(state.quizTotal, 1))) + '%"></div></div></div>';
+      Math.round(100 * (solvedInRound / Math.max(roundTotal, 1))) + '%"></div></div></div>';
 
     html += '<div class="quiz-card" id="quiz-card"><span class="quiz-module-tag">' + m.title + '</span>' +
       '<div class="quiz-question">' + q.q + '</div>' +
@@ -1275,7 +1283,6 @@
   document.getElementById("btn-learn").addEventListener("click", function () { setMode("learn"); });
   document.getElementById("btn-quiz").addEventListener("click", function () { setMode("quiz"); });
 
-  state.quizTotal = totalQuestionCount();
   renderHud();
   renderRail();
   renderLearn();
